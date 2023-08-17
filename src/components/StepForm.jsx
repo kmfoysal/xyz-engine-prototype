@@ -2,8 +2,12 @@ import { Button, Steps, message, theme } from "antd";
 import { useState } from "react";
 import StepOne from "./StepOne";
 import StepTwo from "./StepTwo";
+import { useNavigate } from "react-router-dom";
 
 const StepForm = () => {
+
+  const navigate = useNavigate()
+
   const steps = [
     {
       title: "Basic Info",
@@ -24,6 +28,12 @@ const StepForm = () => {
   const prev = () => {
     setCurrent(current - 1);
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    navigate('/result')
+  }
 
   const items = steps.map((item) => ({
     key: item.title,
@@ -49,9 +59,9 @@ const StepForm = () => {
         {current === steps.length - 1 && (
           <Button
             type="primary"
-            onClick={() => message.success("Processing complete!")}
+            onClick={handleSubmit}
           >
-            Done
+            Show Result
           </Button>
         )}
         {current > 0 && (
