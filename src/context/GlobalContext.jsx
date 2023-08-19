@@ -19,6 +19,9 @@ export const GlobalContextProvider = ({ children }) => {
     min_Z: '',
   });
 
+  const [chartData, setChartData] = useState([]);
+
+
   const handleChange = (e) => {
 
     const type = e.target.type;
@@ -33,7 +36,16 @@ export const GlobalContextProvider = ({ children }) => {
     }));
   };
 
-  const value = {formData, setFormData, handleChange};
+
+
+
+  const value = {
+    formData,
+    setFormData,
+    chartData,
+    setChartData,
+    handleChange,
+  };
 
   return (
     <GlobalContext.Provider value={value}>{children}</GlobalContext.Provider>

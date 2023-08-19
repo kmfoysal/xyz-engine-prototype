@@ -1,5 +1,9 @@
-import { Button, Table } from "antd";
+import { DownloadOutlined } from "@ant-design/icons";
+import { Button, Table, Tooltip } from "antd";
+import { useRef } from "react";
+import ReactToPdf from "react-to-pdf";
 import useGlobal from "../hooks/useGlobal";
+import { Link } from "react-router-dom";
 
 const ResultPage = () => {
   const { formData } = useGlobal();
@@ -14,6 +18,14 @@ const ResultPage = () => {
       title: "Project Description",
       dataIndex: "projectDescription",
       key: "projectDescription",
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (projectDescription) => (
+        <Tooltip placement="topLeft" title={projectDescription}>
+          {projectDescription}
+        </Tooltip>
+      ),
     },
     {
       title: "Client",
@@ -59,6 +71,7 @@ const ResultPage = () => {
 
   const data = [
     {
+      key: 1,
       projectName: formData.projectName,
       projectDescription: formData.projectDescription,
       client: formData.client,
@@ -72,17 +85,65 @@ const ResultPage = () => {
     },
   ];
 
+  const pdfRef = useRef();
+
+  const options = {
+    orientation: "potriot",
+    unit: "in",
+    format: [12, 14],
+  };
+
   return (
-    <div className="container">
-      <div>
-        <h2>Result Page</h2>
+    <div className="result section-wrapper">
+      <div className="container">
+        <div>
+          <div ref={pdfRef}>
+            <h2 className="mb-20 text-center">Result Table</h2>
 
-        <Table columns={columns} dataSource={data} pagination={false}
-      bordered />
+            <Table
+              className="data-table"
+              columns={columns}
+              dataSource={data}
+              pagination={false}
+              bordered
+            />
+          </div>
 
-        <Button type="primary" onClick={() => window.print()}>
-          Print
-        </Button>
+          <div className="btn-wrapper">
+            <Link to="/">
+              <Button
+                type="primary"
+                size="large"
+                style={{ textDecoration: "none" }}
+              >
+                Go To Home
+              </Button>
+            </Link>
+            <Button type="primary" size="large" onClick={() => window.print()}>
+              Print
+            </Button>
+
+            <ReactToPdf
+              targetRef={pdfRef}
+              filename="xyz_engine.pdf"
+              options={options}
+              x={0.5}
+              y={0.5}
+              scale={0.77}
+            >
+              {({ toPdf }) => (
+                <Button
+                  type="primary"
+                  icon={<DownloadOutlined />}
+                  size="large"
+                  onClick={toPdf}
+                >
+                  Download PDF
+                </Button>
+              )}
+            </ReactToPdf>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -1,12 +1,32 @@
-import { Button, Steps, message, theme } from "antd";
+import { Button, Steps } from "antd";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import StepOne from "./StepOne";
 import StepTwo from "./StepTwo";
-import { useNavigate } from "react-router-dom";
+import useGlobal from "../hooks/useGlobal";
 
 const StepForm = () => {
 
+  const { formData } = useGlobal();
+
   const navigate = useNavigate()
+
+  const canNext =
+    formData.projectName !== "" &&
+    formData.projectDescription !== "" &&
+    formData.client !== "" &&
+    formData.contractor !== "";
+  
+  
+  const canSubmit =
+    formData.max_X !== "" &&
+    formData.min_X !== "" &&
+    formData.min_Y !== "" &&
+    formData.max_Y !== "" &&
+    formData.min_Z !== "" &&
+    formData.max_Z !== "";
+  
+  
 
   const steps = [
     {
@@ -31,7 +51,6 @@ const StepForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     navigate('/result')
   }
 
@@ -49,23 +68,33 @@ const StepForm = () => {
       <div
         style={{
           marginTop: 24,
+          display: "flex",
+          justifyContent: "center",
         }}
       >
         {current < steps.length - 1 && (
-          <Button type="primary" onClick={() => next()}>
+          <Button
+            size="large"
+            type="primary"
+            onClick={() => next()}
+            disabled={!canNext}
+          >
             Next
           </Button>
         )}
         {current === steps.length - 1 && (
           <Button
+            size="large"
             type="primary"
             onClick={handleSubmit}
+            disabled={!canSubmit}
           >
             Show Result
           </Button>
         )}
         {current > 0 && (
           <Button
+            size="large"
             style={{
               margin: "0 8px",
             }}
